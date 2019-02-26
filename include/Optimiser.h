@@ -2,16 +2,16 @@
 #define OPTIMISER_H
 #include "GraphHelper.h"
 #include "MutableVertexPartition.h"
-#include <cstdio>
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <set>
 
 using std::cerr;
-using std::cout;
 using std::endl;
 using std::set;
 using std::map;
+using std::ofstream;
 
 /****************************************************************************
 Class for doing community detection using the Louvain algorithm.

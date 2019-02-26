@@ -116,9 +116,10 @@ double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions,
   double total_improv = 0.0;
   double improv = 0.0;
   size_t iter = 0;
+  ofstream log_file;
   if (log_fname[0] != '\0')
   {
-    freopen(log_fname, "w", stdout);
+    log_file.open(log_fname);
   }
   do
   {
@@ -156,7 +157,7 @@ double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions,
         vector<size_t> membership = partitions[layer]->membership();
         for (size_t v = 0; v < partitions[layer]->get_graph()->vcount(); v++)
         {
-          cout << v << "\t" << membership[v] << "\t" << iter << endl;
+          log_file << v << "\t" << membership[v] << "\t" << iter << endl;
         }
       }
     }
@@ -239,7 +240,7 @@ double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions,
   } while (improv > 0);
   if (log_fname[0] != '\0')
   {
-    fclose(stdout);
+    log_file.close();
   }
 
   // Clean up memory after use.
