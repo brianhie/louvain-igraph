@@ -2,11 +2,13 @@
 #define OPTIMISER_H
 #include "GraphHelper.h"
 #include "MutableVertexPartition.h"
-#include <set>
-#include <map>
-
+#include <cstdio>
 #include <iostream>
+#include <map>
+#include <set>
+
 using std::cerr;
+using std::cout;
 using std::endl;
 using std::set;
 using std::map;
@@ -25,6 +27,7 @@ class Optimiser
   public:
     Optimiser();
     double optimise_partition(MutableVertexPartition* partition);
+    double optimise_partition(MutableVertexPartition* partition, const char* log_fname);
     template <class T> T* find_partition(Graph* graph);
     template <class T> T* find_partition(Graph* graph, double resolution_parameter);
 
@@ -33,6 +36,8 @@ class Optimiser
     // Optionally we can loop over all possible communities instead of only the neighbours. In the case of negative
     // layer weights this may be necessary.
     double optimise_partition(vector<MutableVertexPartition*> partitions, vector<double> layer_weights);
+    double optimise_partition(vector<MutableVertexPartition*> partitions, vector<double> layer_weights,
+                              const char* log_fname);
 
     double move_nodes(MutableVertexPartition* partition);
     double move_nodes(MutableVertexPartition* partition, int consider_comms);

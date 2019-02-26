@@ -206,7 +206,6 @@ void MutableVertexPartition::init_admin()
   #ifdef DEBUG
     cerr << "exit MutableVertexPartition::init_admin()" << endl << endl;
   #endif
-
 }
 
 /****************************************************************************

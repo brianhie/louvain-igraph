@@ -43,7 +43,20 @@ double Optimiser::optimise_partition(MutableVertexPartition* partition)
   vector<MutableVertexPartition*> partitions(1, NULL);
   partitions[0] = partition;
   vector<double> layer_weights(1, 1.0);
-  return this->optimise_partition(partitions, layer_weights);
+  return this->optimise_partition(partitions, layer_weights, "");
+}
+
+double Optimiser::optimise_partition(MutableVertexPartition* partition, const char* log_fname)
+{
+  vector<MutableVertexPartition*> partitions(1, NULL);
+  partitions[0] = partition;
+  vector<double> layer_weights(1, 1.0);
+  return this->optimise_partition(partitions, layer_weights, log_fname);
+}
+
+double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions, vector<double> layer_weights)
+{
+  return this->optimise_partition(partitions, layer_weights, "");
 }
 
 /*****************************************************************************
@@ -54,7 +67,7 @@ double Optimiser::optimise_partition(MutableVertexPartition* partition)
 /*****************************************************************************
   optimise the provided partition.
 *****************************************************************************/
-double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions, vector<double> layer_weights)
+double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions, vector<double> layer_weights, const char* log_fname)
 {
   #ifdef DEBUG
     cerr << "void Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions, vector<double> layer_weights)" << endl;
@@ -102,6 +115,11 @@ double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions,
   // As long as there remains improvement iterate
   double total_improv = 0.0;
   double improv = 0.0;
+  size_t iter = 0;
+  if (log_fname[0] != '\0')
+  {
+    freopen(log_fname, "w", stdout);
+  }
   do
   {
 
@@ -131,6 +149,15 @@ double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions,
       if (collapsed_partitions[layer] != partitions[layer])
       {
         partitions[layer]->from_coarse_partition(collapsed_partitions[layer]);
+      }
+
+      if (log_fname[0] != '\0')
+      {
+        vector<size_t> membership = partitions[layer]->membership();
+        for (size_t v = 0; v < partitions[layer]->get_graph()->vcount(); v++)
+        {
+          cout << v << "\t" << membership[v] << "\t" << iter << endl;
+        }
       }
     }
 
@@ -208,7 +235,12 @@ double Optimiser::optimise_partition(vector<MutableVertexPartition*> partitions,
       }
     #endif // DEBUG
 
+    iter += 1;
   } while (improv > 0);
+  if (log_fname[0] != '\0')
+  {
+    fclose(stdout);
+  }
 
   // Clean up memory after use.
   for (size_t layer = 0; layer < nb_layers; layer++)

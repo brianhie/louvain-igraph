@@ -83,6 +83,55 @@ extern "C"
     return PyFloat_FromDouble(q);
   }
 
+  PyObject* _Optimiser_optimise_partition_log(PyObject *self, PyObject *args, PyObject *keywds)
+  {
+    PyObject* py_optimiser = NULL;
+    PyObject* py_partition = NULL;
+    const char* log_fname = NULL;
+
+    static char* kwlist[] = {"optimiser", "partition", "log_fname", NULL};
+
+    #ifdef DEBUG
+      cerr << "Parsing arguments..." << endl;
+    #endif
+
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OOs", kwlist,
+                                     &py_optimiser, &py_partition, &log_fname))
+        return NULL;
+
+    #ifdef DEBUG
+      cerr << "optimise_partition(" << py_partition << ");" << endl;
+    #endif
+
+    #ifdef DEBUG
+      cerr << "Capsule optimiser at address " << py_optimiser << endl;
+    #endif
+    Optimiser* optimiser = decapsule_Optimiser(py_optimiser);
+    #ifdef DEBUG
+      cerr << "Using optimiser at address " << optimiser << endl;
+    #endif
+
+    #ifdef DEBUG
+      cerr << "Capsule partition at address " << py_partition << endl;
+    #endif
+    MutableVertexPartition* partition = decapsule_MutableVertexPartition(py_partition);
+    #ifdef DEBUG
+      cerr << "Using partition at address " << partition << endl;
+    #endif
+
+    double q = 0.0;
+    try
+    {
+      q = optimiser->optimise_partition(partition, log_fname);
+    }
+    catch (std::exception e)
+    {
+      PyErr_SetString(PyExc_ValueError, e.what());
+      return NULL;
+    }
+    return PyFloat_FromDouble(q);
+  }
+  
   PyObject* _Optimiser_optimise_partition_multiplex(PyObject *self, PyObject *args, PyObject *keywds)
   {
     PyObject* py_optimiser = NULL;

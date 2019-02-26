@@ -74,7 +74,7 @@ class Optimiser(object):
   def consider_empty_community(self, value):
     _c_louvain._Optimiser_set_consider_empty_community(self._optimiser, value)
 
-  def optimise_partition(self, partition):
+  def optimise_partition(self, partition, log_fname=''):
     """ Optimise the given partition.
 
     Parameters
@@ -97,7 +97,7 @@ class Optimiser(object):
 
     """
     # Perhaps we
-    diff = _c_louvain._Optimiser_optimise_partition(self._optimiser, partition._partition)
+    diff = _c_louvain._Optimiser_optimise_partition_log(self._optimiser, partition._partition, log_fname)
     partition._update_internal_membership()
     return diff
 
@@ -336,12 +336,12 @@ class Optimiser(object):
           best_res = new_res
       bisect_values[new_res] = bisect_values[best_res]
 
-    def find_partition(self, graph, partition_type, weights=None, **kwargs):
+    def find_partition(self, graph, partition_type, weights=None, log_fname='', **kwargs):
       partition = partition_type(graph,
                              weights=weights,
                              **kwargs)
       n_itr = 0
-      while self.optimise_partition(partition) > 0 and \
+      while self.optimise_partition(partition, log_fname=log_fname) > 0 and \
         (n_itr < number_iterations or number_iterations <= 0):
         n_itr += 1
       return partition

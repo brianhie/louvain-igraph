@@ -396,7 +396,7 @@ class BuildConfiguration(object):
                 buildcfg.print_build_info()
 
                 ext = first(extension for extension in self.extensions
-                        if extension.name == "louvain._c_louvain")
+                            if extension.name == "louvain._c_louvain")
                 buildcfg.configure(ext)
 
                 # Run the original build_ext command

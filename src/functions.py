@@ -24,7 +24,7 @@ def set_rng_seed(seed):
   """ Set seed for internal random number generator. """
   _c_louvain._set_rng_seed(seed)
 
-def find_partition(graph, partition_type, initial_membership=None, weights=None, **kwargs):
+def find_partition(graph, partition_type, initial_membership=None, weights=None, log_fname='', **kwargs):
   """ Detect communities using the default settings.
 
   This function detects communities given the specified method in the
@@ -75,7 +75,7 @@ def find_partition(graph, partition_type, initial_membership=None, weights=None,
                              initial_membership=initial_membership,
                              **kwargs)
   optimiser = Optimiser()
-  optimiser.optimise_partition(partition)
+  optimiser.optimise_partition(partition, log_fname=log_fname)
   return partition
 
 def find_partition_multiplex(graphs, partition_type, **kwargs):
